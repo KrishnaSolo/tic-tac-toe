@@ -1,10 +1,13 @@
 #include "Platform/Platform.hpp"
 #define CALC_Y(l, b) (l * b)
-const int GAMEBOARD_SIZE = 1200;
+const int GAMEBOARD_SIZE = 1300;
+const int TILE_SIZE = 400;
 const int LINE_THICKNESS = 50;
+sf::Color grey(128, 128, 128);
 
 void drawBoard(sf::RenderWindow&);
 std::vector<sf::RectangleShape> setupBoard();
+std::vector<sf::RectangleShape> tiles;
 
 int main()
 {
@@ -29,11 +32,9 @@ int main()
 				window.close();
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
-				if (event.mouseButton.button == sf::Mouse::Right)
+				if (event.mouseButton.button == sf::Mouse::Left)
 				{
-					std::cout << "the right button was pressed" << std::endl;
-					std::cout << "mouse x: " << event.mouseButton.x << std::endl;
-					std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+					event.mouseButton.x
 				}
 			}
 		}
@@ -46,16 +47,28 @@ int main()
 std::vector<sf::RectangleShape> setupBoard()
 {
 	std::vector<sf::RectangleShape> board_lines;
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			sf::RectangleShape tile(sf::Vector2f(TILE_SIZE, TILE_SIZE));
+			tile.setFillColor(grey);
+			tile.setPosition(j * 450, i * 450);
+			board_lines.push_back(tile);
+		}
+	}
+
 	for (int i = 0; i < 2; i++)
 	{
 		sf::RectangleShape line(sf::Vector2f(GAMEBOARD_SIZE, LINE_THICKNESS));
-		line.setPosition(0, (i + 1) * GAMEBOARD_SIZE / 3 - 25);
+		line.setPosition(0, (i + 1) * TILE_SIZE + 50 * i);
 		board_lines.push_back(line);
 	}
 	for (int i = 0; i < 2; i++)
 	{
 		sf::RectangleShape line(sf::Vector2f(LINE_THICKNESS, GAMEBOARD_SIZE));
-		line.setPosition((i + 1) * GAMEBOARD_SIZE / 3 - 25, 0);
+		line.setPosition((i + 1) * TILE_SIZE + 50 * i, 0);
 		board_lines.push_back(line);
 	}
 	return board_lines;
@@ -64,8 +77,8 @@ std::vector<sf::RectangleShape> setupBoard()
 void drawBoard(sf::RenderWindow& mainGameWindow)
 {
 	mainGameWindow.clear();
-	std::vector<sf::RectangleShape> board_lines = setupBoard();
-	for (sf::Shape& line : board_lines)
-		mainGameWindow.draw(line);
+	std::vector<sf::RectangleShape> board_shapes = setupBoard();
+	for (sf::Shape& shape : board_shapes)
+		mainGameWindow.draw(shape);
 	mainGameWindow.display();
 }
