@@ -8,16 +8,15 @@ sf::Color grey(128, 128, 128);
 void drawBoard(sf::RenderWindow&);
 std::vector<sf::RectangleShape> setupBoard();
 std::vector<sf::RectangleShape> tiles;
+std::vector<sf::RectangleShape> board_lines;
 
-void updateClickedTile(int x, int y, sf::RenderWindow& window)
+void updateClickedTile(int x, int y)
 {
-	for (sf::Shape& tile : tiles)
+	for (sf::RectangleShape& tile : tiles)
 	{
-		if (tile.getLocalBounds().contains(x, y))
+		if (tile.getGlobalBounds().contains(x, y))
 		{
 			tile.setFillColor(sf::Color::Green);
-			window.draw(tile);
-			window.display();
 			return;
 		}
 	}
@@ -37,8 +36,9 @@ int main()
 	// Use the screenScalingFactor
 	window.create(sf::VideoMode(GAMEBOARD_SIZE * screenScalingFactor, GAMEBOARD_SIZE * screenScalingFactor), "Tic-Tac-Toe");
 
-	drawBoard(window);
 	sf::Event event;
+	setupBoard();
+	drawBoard(window);
 	while (window.isOpen())
 	{
 		while (window.pollEvent(event))
@@ -47,9 +47,10 @@ int main()
 				window.close();
 			if (event.type == sf::Event::MouseButtonPressed)
 			{
-				updateClickedTile(event.mouseButton.x, event.mouseButton.y, window);
+				updateClickedTile(event.mouseButton.x, event.mouseButton.y);
 			}
 		}
+		drawBoard(window);
 	}
 
 	return 0;
@@ -57,8 +58,6 @@ int main()
 
 std::vector<sf::RectangleShape> setupBoard()
 {
-	std::vector<sf::RectangleShape> board_lines;
-
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -88,9 +87,8 @@ std::vector<sf::RectangleShape> setupBoard()
 void drawBoard(sf::RenderWindow& mainGameWindow)
 {
 	mainGameWindow.clear();
-	std::vector<sf::RectangleShape> board_shapes = setupBoard();
-	for (sf::Shape& shape : board_shapes)
-		mainGameWindow.draw(shape);
+	for (sf::Shape& line : board_lines)
+		mainGameWindow.draw(line);
 	for (sf::Shape& tile : tiles)
 		mainGameWindow.draw(tile);
 	mainGameWindow.display();
