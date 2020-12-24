@@ -37,8 +37,8 @@ public:
 	bool isGameOver();
 
 private:
+	GameData gameData;
 	const Board gameBoard;
-	const GameData gameData;
 	sf::RenderWindow* gameWindow;
 	std::vector<sf::RectangleShape&> tiles;
 	std::vector<sf::RectangleShape&> board;
